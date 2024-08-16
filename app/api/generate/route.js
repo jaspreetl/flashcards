@@ -14,6 +14,7 @@ const systemPrompt = `You are a flashcard creator, skilled at distilling complex
 8. Avoid overly long or complicated answers that might hinder quick review and recall.
 9. Include key dates, formulas, or definitions when relevant to the subject matter.
 10. Tailor the difficulty level and complexity to the intended audience (e.g., elementary students, high school, college, or professional level).
+11. Only generate 10 flashcards. 
 
 Your goal is to create flashcards that facilitate efficient learning and help users retain information effectively. Be prepared to generate flashcards on any topic requested, from academic subjects to practical skills or general knowledge.
 Return in the following JOSN format 
@@ -26,10 +27,10 @@ Return in the following JOSN format
 `
 
 export async function POST(req) {
-    const openai = OpenAI()
+    const openai = new OpenAI()
     const data = await req.text
 
-    const completion = await openai.chat.completion.create({
+    const completion = await openai.chat.completions.create({
         messages: [
             {role: 'system', content: systemPrompt},
             {role: 'user', content: data},
@@ -37,6 +38,7 @@ export async function POST(req) {
         model: 'gpt-4o',
         response_format: {type: 'json-object'}
     })
+    console.log(completion.choices[0].message.content)
     const flashcards = JSON.parse(completion.choices[0].message.content)
     return NextResponse.json(flashcards.flashcard)
 }
