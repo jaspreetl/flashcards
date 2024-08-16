@@ -40,6 +40,6 @@ export async function POST(req) {
     })
     console.log(completion.choices[0].message.content)
     const flashcards = JSON.parse(completion.choices[0].message.content)
-    return NextResponse.json(flashcards.flashcard)
+    return NextResponse.json(flashcards.flashcards)
 }
 
